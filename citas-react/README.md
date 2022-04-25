@@ -1,5 +1,7 @@
 # Mini proyecto de gestión de veterinaria
 
+**Publicado en Netlify** : [Puedes verlo aquí](https://citas-administracion.netlify.app/)
+
 Realizado con tecnologías como lo son:
 
 -   Vite
