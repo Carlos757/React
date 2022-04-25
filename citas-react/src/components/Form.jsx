@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { faL } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const url = "https://60cdf0b491cc8e00178dc287.mockapi.io/pacientes/";
-const Form = () => {
-    const [paciente, setPaciente] = useState({
-        petName: "",
-        ownerName: "",
-        email: "",
-        date: "",
-        sintoms: "",
-    });
-
+const Form = ({
+    consultaPacientes,
+    paciente,
+    setPaciente,
+    actualizando,
+    setActualizando,
+}) => {
     const notifySuccess = (text = "Se creó correctamente") => {
         toast.success(text);
     };
@@ -28,7 +27,6 @@ const Form = () => {
                 },
             });
             const result = await response.json();
-            console.log(result);
             if (result.id) {
                 notifySuccess();
                 setPaciente({
@@ -38,6 +36,36 @@ const Form = () => {
                     date: "",
                     sintoms: "",
                 });
+                consultaPacientes();
+            } else {
+                notifyError(result);
+            }
+        } catch (error) {
+            console.log(error);
+            notifyError(error);
+        }
+    };
+    const actualizarPaciente = async (paciente) => {
+        try {
+            const response = await fetch(url + paciente.id, {
+                method: "PUT",
+                body: JSON.stringify(paciente),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const result = await response.json();
+            if (result.id) {
+                notifySuccess("Se actualizó correctamente");
+                setPaciente({
+                    petName: "",
+                    ownerName: "",
+                    email: "",
+                    date: "",
+                    sintoms: "",
+                });
+                consultaPacientes();
+                setActualizando(false);
             } else {
                 notifyError(result);
             }
@@ -49,7 +77,7 @@ const Form = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const { petName, ownerName, email, date, sintoms } = paciente;
+        const { id, petName, ownerName, email, date, sintoms } = paciente;
         if (
             petName.trim() === "" ||
             ownerName.trim() === "" ||
@@ -61,13 +89,17 @@ const Form = () => {
             return;
         }
         const newPaciente = {
+            id,
             petName,
             ownerName,
             email,
             date,
             sintoms,
         };
-        crearPaciente(newPaciente);
+
+        !actualizando
+            ? crearPaciente(newPaciente)
+            : actualizarPaciente(newPaciente);
     };
 
     const handlePetNameChange = (e) => {
@@ -85,17 +117,33 @@ const Form = () => {
     const handleSintomsChange = (e) => {
         setPaciente({ ...paciente, sintoms: e.target.value });
     };
+    const handleCancel = (e) => {
+        e.preventDefault();
+        setPaciente({
+            petName: "",
+            ownerName: "",
+            email: "",
+            date: "",
+            sintoms: "",
+        });
+        setActualizando(false);
+    };
 
     return (
-        <div className="mt-3 mx-2 p-5 shadow-xl shadow-indigo-500/50 rounded-2xl bg-slate-800 text-white sm:w-1/2">
+        <div className="mt-3 mx-2 p-5 shadow-xl sm:h-[80vh] sm:overflow-auto shadow-indigo-500/50 rounded-2xl bg-slate-800 text-white sm:w-1/2">
             <h3 className="text-center text-2xl mb-1">Crear Cita</h3>
             <h4 className="text-center font-light text-xl mb-3">
                 Agrega Pacientes y{" "}
                 <span className="text-blue-500 font-bold">Administralos</span>
             </h4>
-            <form className="p-5 bg-slate-50 rounded-xl text-black">
+            <form
+                className="p-5 bg-slate-50 rounded-xl text-black "
+                onSubmit={(e) => handleSubmit(e)}
+            >
                 <label htmlFor="petName" className="mr-1 flex justify-between">
-                    <span>Nombre Mascota:</span>
+                    <span className="uppercase font-semibold">
+                        Nombre Mascota:
+                    </span>
                     <span className="fa-solid fa-dog m-1"></span>
                 </label>
                 <input
@@ -112,7 +160,9 @@ const Form = () => {
                     htmlFor="ownerName"
                     className="mr-1 flex justify-between"
                 >
-                    <span>Nombre del Propietario:</span>
+                    <span className="uppercase font-semibold">
+                        Nombre del Propietario:
+                    </span>
                     <span className="fa-regular fa-user m-1"></span>
                 </label>
                 <input
@@ -126,7 +176,7 @@ const Form = () => {
                     placeholder="Ingresa Nombre del Propietario"
                 />
                 <label htmlFor="email" className="mr-1 flex justify-between">
-                    Email:
+                    <span className="uppercase font-semibold">Email:</span>
                     <span className="fa-regular fa-envelope m-1"></span>
                 </label>
                 <input
@@ -140,7 +190,7 @@ const Form = () => {
                     placeholder="Ingresa email del cliente"
                 />
                 <label htmlFor="date" className="mr-1 flex justify-between">
-                    Alta:
+                    <span className="uppercase font-semibold">Alta:</span>
                     <span className="fa-regular fa-calendar m-1"></span>
                 </label>
                 <input
@@ -154,7 +204,7 @@ const Form = () => {
                     placeholder="Ingresa fecha"
                 />
                 <label htmlFor="sintoms" className="mr-1 flex justify-between">
-                    Síntomas:
+                    <span className="uppercase font-semibold">Síntomas:</span>
                     <span className="fa-solid fa-notes-medical m-1"></span>
                 </label>
                 <textarea
@@ -167,13 +217,24 @@ const Form = () => {
                     onChange={(e) => handleSintomsChange(e)}
                     placeholder="Ingresa sintomas de la mascota"
                 />
-                <button
-                    className="py-3 w-full bg-sky-600 text-white rounded-xl font-light text-xl hover:bg-blue-500 hover:transition-all duration-300"
-                    type="submit"
-                    onClick={(e) => handleSubmit(e)}
-                >
-                    Guardar
-                </button>
+                <div className="my-3">
+                    <button
+                        type="submit"
+                        className="py-3 mb-2 w-full bg-sky-600 text-white rounded-xl font-light text-xl hover:bg-blue-500 hover:transition-all duration-300"
+                    >
+                        {actualizando ? "Actualizar" : "Crear Cita"}
+                    </button>
+                    <button
+                        className={
+                            actualizando
+                                ? "py-3 w-full bg-rose-500 text-white rounded-xl font-light text-xl hover:bg-red-500 hover:transition-all duration-300"
+                                : "hidden py-3 w-full bg-rose-500 text-white rounded-xl font-light text-xl hover:bg-red-500 hover:transition-all duration-300"
+                        }
+                        onClick={(e) => handleCancel(e)}
+                    >
+                        Cancelar
+                    </button>
+                </div>
             </form>
         </div>
     );
