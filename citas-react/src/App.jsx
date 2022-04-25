@@ -4,9 +4,9 @@ import ListadoPacientes from "./components/ListadoPacientes";
 
 function App() {
     return (
-        <div className="container mx-auto">
+        <div className="">
             <Header />
-            <div className=" flex flex-nowrap flex-col sm:flex-row">
+            <div className="container mx-auto flex flex-nowrap flex-col sm:flex-row  sm:items-start">
                 <Form />
                 <ListadoPacientes />
             </div>
