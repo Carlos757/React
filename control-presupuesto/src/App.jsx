@@ -1,9 +1,12 @@
 import { useState } from "react";
+import Header from "./components/Header";
+import NuevoPresupuesto from "./components/NuevoPresupuesto";
 
 function App() {
     return (
         <div className="App">
-            <h1>Hello </h1>
+            <Header />
+            <NuevoPresupuesto />
         </div>
     );
 }

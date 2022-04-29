@@ -98,7 +98,7 @@ header h1 {
     flex: 1;
     font-size: 1.6rem;
 }
-.formulario input[type="submit"] {
+.formulario button[type="submit"] {
     background-color: #1048a4;
     border: none;
     padding: 1rem;
@@ -112,12 +112,12 @@ header h1 {
     transition: background-color 300ms ease;
 }
 @media (min-width: 768px) {
-    .formulario input[type="submit"] {
+    .formulario button[type="submit"] {
         display: block;
         padding: 1rem 5rem;
     }
 }
-.formulario input[type="submit"]:hover {
+.formulario button[type="submit"]:hover {
     background-color: #042a67;
     cursor: pointer;
 }
