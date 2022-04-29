@@ -2,76 +2,49 @@ import { faL } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const url = "https://60cdf0b491cc8e00178dc287.mockapi.io/pacientes/";
 const Form = ({
-    consultaPacientes,
+    setPacientes,
+    pacientes,
     paciente,
     setPaciente,
     actualizando,
     setActualizando,
 }) => {
-    const notifySuccess = (text = "Se creó correctamente") => {
-        toast.success(text);
-    };
-    const notifyError = (text = "Error") => toast.error(text);
-    const notifyInfo = (text = "Información") => toast.info(text);
-    const notifyWarning = (text = "Advertencia") => toast.warning(text);
-
     const crearPaciente = async () => {
         try {
-            const response = await fetch(url, {
-                method: "POST",
-                body: JSON.stringify(paciente),
-                headers: {
-                    "Content-Type": "application/json",
-                },
+            setPacientes([...pacientes, { id: generateId(), ...paciente }]);
+
+            toast.success("Se creó correctamente");
+            setPaciente({
+                petName: "",
+                ownerName: "",
+                email: "",
+                date: "",
+                sintoms: "",
             });
-            const result = await response.json();
-            if (result.id) {
-                notifySuccess();
-                setPaciente({
-                    petName: "",
-                    ownerName: "",
-                    email: "",
-                    date: "",
-                    sintoms: "",
-                });
-                consultaPacientes();
-            } else {
-                notifyError(result);
-            }
         } catch (error) {
             console.log(error);
-            notifyError(error);
+            toast.error(error);
         }
     };
-    const actualizarPaciente = async (paciente) => {
+    const actualizarPaciente = (pacienteActualizado) => {
         try {
-            const response = await fetch(url + paciente.id, {
-                method: "PUT",
-                body: JSON.stringify(paciente),
-                headers: {
-                    "Content-Type": "application/json",
-                },
+            const newPacientes = pacientes.map((p) =>
+                p.id === pacienteActualizado.id ? pacienteActualizado : p
+            );
+            setPacientes(newPacientes);
+            toast.success("Se actualizó correctamente");
+            setPaciente({
+                petName: "",
+                ownerName: "",
+                email: "",
+                date: "",
+                sintoms: "",
             });
-            const result = await response.json();
-            if (result.id) {
-                notifySuccess("Se actualizó correctamente");
-                setPaciente({
-                    petName: "",
-                    ownerName: "",
-                    email: "",
-                    date: "",
-                    sintoms: "",
-                });
-                consultaPacientes();
-                setActualizando(false);
-            } else {
-                notifyError(result);
-            }
+            setActualizando(false);
         } catch (error) {
             console.log(error);
-            notifyError(error);
+            toast.error(error);
         }
     };
 
@@ -85,7 +58,7 @@ const Form = ({
             date.trim() === "" ||
             sintoms.trim() === ""
         ) {
-            notifyWarning("Los campos no pueden estar vacíos");
+            toast.warning("Los campos no pueden estar vacíos");
             return;
         }
         const newPaciente = {
@@ -128,6 +101,11 @@ const Form = ({
         });
         setActualizando(false);
     };
+    function generateId() {
+        const date = Date.now().toString(36);
+        const random = Math.random().toString(36).substring(2);
+        return random + date;
+    }
 
     return (
         <div className="mt-3 mx-2 p-5 shadow-xl sm:h-[80vh] sm:overflow-auto shadow-indigo-500/50 rounded-2xl bg-slate-800 text-white sm:w-1/2">
