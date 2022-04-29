@@ -13,7 +13,7 @@ Realizado con tecnologías como lo son:
 
 ## Instalación
 
-Posisionarse en la carpeta raíz y ejecutar los siguientes comandos:
+Posicionarse en la carpeta raíz y ejecutar los siguientes comandos:
 
 ```
 cd citas-react
