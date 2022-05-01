@@ -132,7 +132,7 @@ header h1 {
 }
 
 .alerta {
-    padding: 2rem 5rem;
+    padding: 1rem 5rem;
     max-width: 60rem;
     margin: 2rem auto 2rem auto;
     font-weight: 900;
@@ -141,7 +141,7 @@ header h1 {
     text-align: center;
 }
 .alerta.error {
-    background-color: var(--blanco);
+    background-color: #b91c1c1f;
     border-left: 5px solid #b91c1c;
     color: #b91c1c;
 }
