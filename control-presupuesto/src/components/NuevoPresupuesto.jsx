@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import Presupuesto from "./Presupuesto";
 import Alerta from "./utilities/Alerta";
 
-const NuevoPresupuesto = () => {
-    const [presupuesto, setPresupuesto] = useState("");
+const NuevoPresupuesto = ({ presupuesto, setPresupuesto }) => {
     const [error, setError] = useState(false);
     const [muestraPresupuesto, setMuestraPresupuesto] = useState(false);
 
@@ -28,7 +27,7 @@ const NuevoPresupuesto = () => {
         setError(false);
     }
     return (
-        <div className="contenedor contenedor-presupuesto sombra">
+        <div className="container d-flex justify-center align-center">
             {muestraPresupuesto ? (
                 <Presupuesto
                     presupuesto={presupuesto}
@@ -36,14 +35,17 @@ const NuevoPresupuesto = () => {
                     setMuestraPresupuesto={setMuestraPresupuesto}
                 />
             ) : (
-                <form className="formulario" onSubmit={handleSubmit}>
+                <form className="card form" onSubmit={handleSubmit}>
                     {error && (
                         <Alerta text="El presupuesto ingresado no es valido" />
                     )}
-                    <div className="campo">
-                        <label htmlFor="presupuesto">Definir presupuesto</label>
+                    <div className="form-content">
+                        <label className="etiqueta" htmlFor="presupuesto">
+                            Definir presupuesto
+                        </label>
+
                         <input
-                            className="nuevo-presupuesto"
+                            className=""
                             type="number"
                             placeholder="Agrega tu Presupuesto"
                             value={presupuesto}
@@ -52,7 +54,9 @@ const NuevoPresupuesto = () => {
                         />
                     </div>
 
-                    <button type="submit">Agregar</button>
+                    <button className="btn btn-primary" type="submit">
+                        Agregar
+                    </button>
                 </form>
             )}
         </div>
