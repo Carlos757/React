@@ -2,14 +2,19 @@ import React, { useState } from "react";
 import Presupuesto from "./Presupuesto";
 import Alerta from "./utilities/Alerta";
 
-const NuevoPresupuesto = ({ presupuesto, setPresupuesto }) => {
+const NuevoPresupuesto = ({
+    presupuesto,
+    setPresupuesto,
+    muestraPresupuesto,
+    setMuestraPresupuesto,
+}) => {
     const [error, setError] = useState(false);
-    const [muestraPresupuesto, setMuestraPresupuesto] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!error) {
             setMuestraPresupuesto(true);
+            localStorage.setItem("presupuesto", JSON.stringify(presupuesto));
             return;
         }
     };

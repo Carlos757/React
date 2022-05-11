@@ -26,6 +26,11 @@ const ModalNuevoGasto = ({
                     nombre: nombreGasto,
                     cantidad: parseInt(cantidad),
                     categoria: categoria,
+                    fecha: new Date().toLocaleDateString("es-ES", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                    }),
                 },
             ]);
             setModalNuevoGasto(false);

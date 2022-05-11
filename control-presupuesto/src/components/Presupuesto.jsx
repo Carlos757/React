@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import imgNuevoGasto from "./../img/nuevo-gasto.svg";
+import ListaGastos from "./ListaGastos";
 import ModalNuevoGasto from "./ModalNuevoGasto";
 const url = "https://60cdf0b491cc8e00178dc287.mockapi.io/";
 
@@ -9,7 +9,9 @@ const Presupuesto = ({
     setMuestraPresupuesto,
 }) => {
     const [categorias, setCategorias] = useState([]);
-    const [gastos, setGastos] = useState([]);
+    const [gastos, setGastos] = useState(
+        JSON.parse(localStorage.getItem("gastos")) ?? []
+    );
 
     const [gastado, setGastado] = useState(
         parseFloat(JSON.parse(localStorage.getItem("gastado")) ?? 0)
@@ -24,6 +26,7 @@ const Presupuesto = ({
 
     useEffect(() => {
         calcularGastado();
+        localStorage.setItem("gastos", JSON.stringify(gastos));
     }, [gastos]);
 
     useEffect(() => {
@@ -38,6 +41,8 @@ const Presupuesto = ({
             )
         ) {
             setPresupuesto("");
+            localStorage.removeItem("presupuesto");
+            localStorage.removeItem("gastos");
             setMuestraPresupuesto(false);
         }
     };
@@ -58,52 +63,60 @@ const Presupuesto = ({
             let sumaGastos = gastos.reduce((suma, gasto) => {
                 return suma + gasto.cantidad;
             }, 0);
-            console.log(sumaGastos);
             setGastado(sumaGastos);
         }
     }
     return (
-        <div className="card">
-            <div className="card-content">
-                <div className="progress">
-                    <progress
-                        className="progress-bar"
-                        max={presupuesto}
-                        value={gastado}
+        <div className="d-flex flex-column">
+            <div className="card">
+                <div className="card-content">
+                    <div className="progress">
+                        <progress
+                            className="progress-bar"
+                            max={presupuesto}
+                            value={gastado}
+                        />
+                        <span className="etiqueta txt-center">
+                            {porcentajeGastado}% gastado
+                        </span>
+                    </div>
+                    <div className="gastos-content">
+                        <p className="etiqueta">
+                            Presupuesto: <span>$ {presupuesto}</span>{" "}
+                        </p>
+
+                        <p className="etiqueta">
+                            Disponible: <span>$ {disponible}</span>
+                        </p>
+
+                        <p className="etiqueta">
+                            Gastado: <span>$ {gastado}</span>
+                        </p>
+
+                        <button className="btn btn-reset" onClick={handleReset}>
+                            Reiniciar
+                        </button>
+                    </div>
+                </div>
+                <a className="btn-nuevo-gasto" onClick={handleNuevoGasto}>
+                    <img src="/img/nuevo-gasto.svg" alt="nuevo gasto" />
+                </a>
+                {modalNuevoGasto && (
+                    <ModalNuevoGasto
+                        setModalNuevoGasto={setModalNuevoGasto}
+                        categorias={categorias}
+                        setCategorias={setCategorias}
+                        gastos={gastos}
+                        setGastos={setGastos}
+                        disponible={disponible}
                     />
-                    <span className="etiqueta txt-center">
-                        {porcentajeGastado}% gastado
-                    </span>
-                </div>
-                <div className="gastos-content">
-                    <p className="etiqueta">
-                        Presupuesto: <span>$ {presupuesto}</span>{" "}
-                    </p>
-
-                    <p className="etiqueta">
-                        Disponible: <span>$ {disponible}</span>
-                    </p>
-
-                    <p className="etiqueta">
-                        Gastado: <span>$ {gastado}</span>
-                    </p>
-
-                    <button className="btn btn-reset" onClick={handleReset}>
-                        Reiniciar
-                    </button>
-                </div>
+                )}
             </div>
-            <a className="btn-nuevo-gasto" onClick={handleNuevoGasto}>
-                <img src={imgNuevoGasto} alt="nuevo gasto" />
-            </a>
-            {modalNuevoGasto && (
-                <ModalNuevoGasto
-                    setModalNuevoGasto={setModalNuevoGasto}
-                    categorias={categorias}
-                    setCategorias={setCategorias}
+            {gastos.length > 0 && (
+                <ListaGastos
                     gastos={gastos}
                     setGastos={setGastos}
-                    disponible={disponible}
+                    categorias={categorias}
                 />
             )}
         </div>
