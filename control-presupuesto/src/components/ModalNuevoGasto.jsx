@@ -24,7 +24,7 @@ const ModalNuevoGasto = ({
                 {
                     id: generateId(),
                     nombre: nombreGasto,
-                    cantidad: parseInt(cantidad),
+                    cantidad: parseFloat(parseFloat(cantidad).toFixed(2)),
                     categoria: categoria,
                     fecha: new Date().toLocaleDateString("es-ES", {
                         day: "numeric",
@@ -37,7 +37,7 @@ const ModalNuevoGasto = ({
         }
     };
     function validaFormulario() {
-        const cantidadParseada = parseInt(cantidad);
+        const cantidadParseada = parseFloat(parseFloat(cantidad).toFixed(2));
 
         if (!cantidadParseada || cantidadParseada < 0) {
             seterror(true);

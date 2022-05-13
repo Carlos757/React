@@ -263,26 +263,18 @@ select {
 .modal {
     display: flex;
     justify-content: center;
-    position: absolute;
+    position: fixed;
     max-width: 40rem;
     top: 20vh;
     margin: 0 1rem;
 }
 .modal-backdrop {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-}
-.modal-backdrop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100%;
+    margin: 0;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
 }
@@ -299,6 +291,14 @@ select {
     background-color: var(--primary);
     color: white;
 }
+.btn-acumulado {
+    width: auto;
+    margin: 0.5rem;
+    font-size: 1.1rem;
+    background-color: var(--primary);
+    color: white;
+}
+
 .btn-reset {
     background-color: var(--danger);
     color: white;
@@ -308,6 +308,9 @@ select {
     cursor: pointer;
 }
 .btn-primary:hover {
+    background-color: var(--secondary);
+}
+.btn-acumulado:hover {
     background-color: var(--secondary);
 }
 .btn-reset:hover {

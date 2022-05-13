@@ -16,7 +16,9 @@ const Presupuesto = ({
     const [gastado, setGastado] = useState(
         parseFloat(JSON.parse(localStorage.getItem("gastado")) ?? 0)
     );
-    const [disponible, setDisponible] = useState(presupuesto - gastado);
+    const [disponible, setDisponible] = useState(
+        formatNumber(presupuesto - gastado)
+    );
     const [porcentajeGastado, setPorcentajeGastado] = useState(0);
     const [modalNuevoGasto, setModalNuevoGasto] = useState(false);
 
@@ -63,8 +65,11 @@ const Presupuesto = ({
             let sumaGastos = gastos.reduce((suma, gasto) => {
                 return suma + gasto.cantidad;
             }, 0);
-            setGastado(sumaGastos);
+            setGastado(formatNumber(sumaGastos));
         }
+    }
+    function formatNumber(n) {
+        return parseFloat(parseFloat(n).toFixed(2));
     }
     return (
         <div className="d-flex flex-column">
@@ -86,7 +91,7 @@ const Presupuesto = ({
                         </p>
 
                         <p className="etiqueta">
-                            Disponible: <span>$ {disponible}</span>
+                            Disponible: <span>$ {disponible.toFixed(2)}</span>
                         </p>
 
                         <p className="etiqueta">
@@ -113,11 +118,13 @@ const Presupuesto = ({
                 )}
             </div>
             {gastos.length > 0 && (
-                <ListaGastos
-                    gastos={gastos}
-                    setGastos={setGastos}
-                    categorias={categorias}
-                />
+                <>
+                    <ListaGastos
+                        gastos={gastos}
+                        setGastos={setGastos}
+                        categorias={categorias}
+                    />
+                </>
             )}
         </div>
     );
